@@ -25,7 +25,7 @@ class TestUtils < MiniTest::Unit::TestCase
     assert_equal ftext.length, 100
 
     assert_raises(RuntimeError) { st.create_file(100, file, true, units='Foo') }
-    
+
     st.create_file(1, file, true, units='kb')
     File.open(file) {|f| ftext=f.read}
     assert_equal ftext.length, 1_000
@@ -33,9 +33,22 @@ class TestUtils < MiniTest::Unit::TestCase
     st.create_file(1, file, true, units='Mb')
     File.open(file) {|f| ftext=f.read}
     assert_equal ftext.length, 1_000_000
+
+    # st.create_file(100, 'bytes100.txt', true)
+    # st.create_file(1, 'bytes100000.txt', true, units='KB')
+    # st.create_file(1, 'bytes100000000.txt', true, units='MB')
+    puts "aws_rw_un: #{ENV['aws_s3_rw_un']}"
   end
 
   def teardown
     FileUtils.remove_entry(@dir, force = true)
   end
+end
+
+class TestUtils < MiniTest::Unit::TestCase
+  def test_aws_create_files
+    st=Speedtest::Utils.new
+    st.aws_create_files
+  end
+
 end
