@@ -6,15 +6,17 @@ module Speedtest
       @bucket = 'rrosen326.speedtest'
       @units = {
         :ONE => 1,
-        :KB => 1_000,
-        :MB => 1_000_000
+        :KB => 1024,
+        :MB => 1024*1024
       }
     end
 
     # Create a file of size bytes (units in [:KB, :MB, nil/:ONE (1)])
     #
-    # Note - this uses decimal vales for KB/MB.  So 1 MB will be 10^6 bytes, but
-    #  will show up as 977K on the file system. (See http://en.wikipedia.org/wiki/Megabyte)
+    # Note - this uses binary vales for KB/MB (eg 1024=1KB).
+    # This way if my speed says 1MB/s, it means i can transfer a 1MB file in 1 s
+    # (File sizes use base 2).  This is how backblaze does it.
+    # (See http://en.wikipedia.org/wiki/Megabyte &&  http://bit.ly/1vH9GM8)
     def nbyte_string(size, units=:ONE)
       units ||= :ONE
 
