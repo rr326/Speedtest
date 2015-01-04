@@ -4,19 +4,23 @@ require 'fileutils'
 require_relative '../lib/speedtest/utils'
 require_relative '../lib/speedtest/measure'
 
+
+
 class TestUtils < MiniTest::Unit::TestCase
+  include Speedtest
+
   def test_nbyte_string
-    string = Speedtest::Utils::nbyte_string(100)
+    string = Utils.nbyte_string(100)
     assert_equal string.length, 100
 
-    string = Speedtest::Utils::nbyte_string(1, units=:KB)
+    string = Utils.nbyte_string(1, units=:KB)
     assert_equal string.length, 1024
 
-    string = Speedtest::Utils::nbyte_string(1, units=:MB)
+    string = Utils.nbyte_string(1, units=:MB)
     assert_equal string.length, 1024*1024
 
-    assert_raises(RuntimeError) { Speedtest::Utils::nbyte_string(100, units=:FOO) }
-    assert_raises(RuntimeError) { Speedtest::Utils::nbyte_string(100, units='MB') }
+    assert_raises(RuntimeError) { Utils.nbyte_string(100, units=:FOO) }
+    assert_raises(RuntimeError) { Utils.nbyte_string(100, units='MB') }
 
   end
   
@@ -24,7 +28,7 @@ end
 
 class TestUtils < MiniTest::Unit::TestCase
   def xtest_aws_create_files
-    Speedtest::Utils::aws_create_files
+    Speedtest::Utils.aws_create_files
   end
 
 end

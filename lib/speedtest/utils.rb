@@ -5,9 +5,9 @@ module Speedtest
     @@file_tmpl = 'bytes_%s_%s.txt'
     @@bucket = 'rrosen326.speedtest'
     @@units = {
-      :ONE => 1,
-      :KB => 1024,
-      :MB => 1024*1024
+        :ONE => 1,
+        :KB => 1024,
+        :MB => 1024*1024
     }
 
     # Create a file of size bytes (units in [:KB, :MB, nil/:ONE (1)])
@@ -45,7 +45,12 @@ module Speedtest
       retval = block.call
       return [Time.now - t0, retval]
     end
+
+    def self.get_file
+
+    end
   end
+
 end
 
 
