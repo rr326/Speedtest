@@ -1,9 +1,6 @@
 require 'minitest/autorun'
-require 'tmpdir'
-require 'fileutils'
 require_relative '../lib/speedtest/utils'
 require_relative '../lib/speedtest/measure'
-
 
 
 class TestUtils < MiniTest::Unit::TestCase
@@ -26,12 +23,6 @@ class TestUtils < MiniTest::Unit::TestCase
   
 end
 
-class TestUtils < MiniTest::Unit::TestCase
-  def xtest_aws_create_files
-    Speedtest::Utils.aws_create_files
-  end
-
-end
 
 class TestUtils < MiniTest::Unit::TestCase
   def test_measure

@@ -24,20 +24,6 @@ module Speedtest
       return '0' * size * @@units[units]
     end
 
-    def self.aws_create_files
-      s3_rw_creds = Aws::Credentials.new(*(ENV['aws_s3_rw'].split(',')))
-      s3 = Aws::S3::Client.new(region: 'us-west-2', credentials: s3_rw_creds )
-
-      [[1,:ONE], [1, :KB], [1, :MB]].each do |size, units|
-
-        puts("Writing to aws: size: #{size}  units: #{units}")
-        fname = sprintf @@file_tmpl, size, units
-        body = nbyte_string(size, units=units)
-        s3.put_object(bucket: @@bucket, key: fname, body: body )
-      end
-    end
-
-
     # Return the time of a block:
     # [time(s), block_retval]
     def self.timer(&block)
@@ -46,8 +32,30 @@ module Speedtest
       return [Time.now - t0, retval]
     end
 
-    def self.get_file
+    def self.aws_file_name(size, units)
+      return sprintf @@file_tmpl, size, units
+    end
 
+    def self.create_files
+      s3_rw_creds = Aws::Credentials.new(*(ENV['aws_s3_rw'].split(',')))
+      s3 = Aws::S3::Client.new(region: 'us-west-2', credentials: s3_rw_creds)
+
+      [[1,:ONE], [1, :KB], [1, :MB]].each do |size, units|
+
+        puts("Writing to aws: size: #{size}  units: #{units}")
+        fname = aws_file_name(size, units)
+        body = nbyte_string(size, units=units)
+        s3.put_object(bucket: @@bucket, key: fname, body: body )
+      end
+    end
+
+    def self.get_file(size, units)
+      s3_rw_creds = Aws::Credentials.new(*(ENV['aws_s3_r'].split(',')))
+      s3 = Aws::S3::Client.new(region: 'us-west-2', credentials: s3_rw_creds)
+      fname = aws_file_name(size, units)
+      resp = s3.get_object(bucket: @@bucket, key: fname)
+      body = resp.body.read
+      return body
     end
   end
 
