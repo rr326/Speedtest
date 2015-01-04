@@ -3,7 +3,7 @@ require_relative '../lib/speedtest/utils'
 require_relative '../lib/speedtest/measure'
 
 
-class TestUtils < MiniTest::Unit::TestCase
+class TestUtils < MiniTest::Test
   include Speedtest
 
   def test_nbyte_string
@@ -24,7 +24,7 @@ class TestUtils < MiniTest::Unit::TestCase
 end
 
 
-class TestUtils < MiniTest::Unit::TestCase
+class TestUtils < MiniTest::Test
   def test_measure
     st=Speedtest::Measure.new
     time, retval = st.latency

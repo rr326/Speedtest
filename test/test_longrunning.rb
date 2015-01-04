@@ -2,10 +2,11 @@ require 'minitest/autorun'
 require 'aws-sdk'
 require_relative '../lib/speedtest/utils'
 
-class TestUtils < MiniTest::Unit::TestCase
+# This isn't really a test - its an easy way to run the create file task.
+# TODO: Move to Rake
+class TestUtils < MiniTest::Test
   include Speedtest
-  # This isn't really a test - its an easy way to run the create file task.
-  # Move to Rake
+
   def test_aws_create_files
     Utils.create_files
   end
@@ -18,3 +19,17 @@ class TestUtils < MiniTest::Unit::TestCase
     assert_raises(Aws::S3::Errors::NoSuchKey) { Utils.get_file(23, units=:ONE) }
   end
 end
+
+class TestUtils < MiniTest::Test
+  include Speedtest
+
+  def test_timer
+    time, retval = Utils.timer do
+      sleep 1.35
+      'success!'
+    end
+    assert_equal retval, 'success!'
+    assert_equal time.round(2), 1.35
+  end
+end
+
