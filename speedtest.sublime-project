@@ -1,0 +1,30 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/Users/rrosen/dev/speedtest"
+		}
+	],
+	 "build_systems":
+    [
+        {
+            "name": "Test - wip",
+            "cmd": ["rake", "test:wip"],
+            "working_dir": "$project_path",
+            "path": "${GEM_PATH}:${MY_RUBY_HOME}/bin:${PATH}"
+            },
+        {
+            "name": "Test - longrunning",
+            "cmd": ["rake", "test:long"],
+            "working_dir": "$project_path",
+            "path": "${GEM_PATH}:${MY_RUBY_HOME}/bin:${PATH}"
+        },
+        {
+            "name": "Test - all",
+            "cmd": ["rake", "test"],
+            "working_dir": "$project_path",
+            "path": "${GEM_PATH}:${MY_RUBY_HOME}/bin:${PATH}"
+        }
+    ]
+}

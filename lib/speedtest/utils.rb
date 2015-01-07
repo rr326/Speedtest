@@ -49,11 +49,16 @@ module Speedtest
       end
     end
 
-    def self.get_file(size, units)
+    def self.get_file(size, units, extra_options={})
       s3_rw_creds = Aws::Credentials.new(*(ENV['aws_s3_r'].split(',')))
-      s3 = Aws::S3::Client.new(region: 'us-west-2', credentials: s3_rw_creds)
+      s3 = Aws::S3::Client.new({region: 'us-west-2', credentials: s3_rw_creds}.merge(extra_options))
       fname = aws_file_name(size, units)
-      resp = s3.get_object(bucket: @@bucket, key: fname)
+      begin
+        resp = s3.get_object(bucket: @@bucket, key: fname)
+      rescue Seahorse::Client::NetworkingError => e
+        raise IOError.new "Failed to get file (#{fname}). Error: #{e}."
+      end
+
       body = resp.body.read
       return body
     end

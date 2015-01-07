@@ -6,7 +6,7 @@ require_relative '../lib/speedtest/measure'
 class TestUtils < MiniTest::Test
   include Speedtest
 
-  def test_nbyte_string
+  def xtest_nbyte_string
     string = Utils.nbyte_string(100)
     assert_equal string.length, 100
 
@@ -23,13 +23,58 @@ class TestUtils < MiniTest::Test
   
 end
 
+class TestUtils < MiniTest::Test
+  include Speedtest
+
+  def test_timer
+    time, retval = Utils.timer do
+      sleep 0.05
+      'success!'
+    end
+    assert_equal retval, 'success!'
+    assert_equal time.round(2), 0.05
+  end
+end
 
 class TestUtils < MiniTest::Test
   def test_measure
-    st=Speedtest::Measure.new
-    time, retval = st.latency
-    assert_equal retval, 'success!'
-    assert_equal time.round(2), 1.35
+    # Test expected return
+    Speedtest::Utils.stub :get_file, '0' do
+      st=Speedtest::Measure.new
+      time, err = st.latency
+      #assert_nil err
+      #assert_in_delta 0.1, 0.1, time
+    end
+
+    def raise_IO_Error(*args)
+      raise IOError.new('Force expected error')
+    end
+
+    # Test handled failure
+    Speedtest::Utils.stub :get_file, self.method(:raise_IO_Error) do
+      st=Speedtest::Measure.new
+      _, err = st.latency
+      #assert_equal -1, err[0] || []
+    end
+
+    def raise_other_Error(*args)
+      raise RuntimeError.new('Force unexpected error')
+    end
+
+    # Test unexpected failure
+    Speedtest::Utils.stub :get_file, self.method(:raise_other_Error) do
+      st=Speedtest::Measure.new
+      _, err = st.latency
+      #assert_equal -2, err[0] || []
+    end
+
+
   end
 
+  # def test_aws_get_files
+  #   assert_equal  1024*1024, Utils.get_file(1, :MB, extra_options={:http_read_timeout => 0.0001}).length
+  #
+  # end
+
 end
+
