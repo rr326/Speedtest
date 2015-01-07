@@ -19,7 +19,7 @@ module Speedtest
 
     # Measure throughput by timing the retrieval of a big file
     def throughput
-      _time_get_file(1, :MB)
+      t, e =_time_get_file(1, :MB)
       res = TimerResult.new('throughput', t, e)
     end
 
@@ -39,6 +39,10 @@ module Speedtest
       def to_s
         to_log
       end
+
+      def error?
+        !@error.nil?
+      end
     end
 
     def _time_get_file(size, units)
@@ -50,13 +54,12 @@ module Speedtest
           err = {errno: -1, err: e}
         rescue Exception => e
           @log.error "Unhandled exception: #{e}"
-          err = {errno: -1, err: e}
+          err = {errno: -2, err: e}
         else
           err = nil
         end
         err
       end
-      @log.debug "_time_get_file: #{time}, #{errval}"
       return time, errval
     end
 

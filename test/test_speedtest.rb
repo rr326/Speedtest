@@ -41,9 +41,9 @@ class TestUtils < MiniTest::Test
     # Test expected return
     Speedtest::Utils.stub :get_file, '0' do
       st=Speedtest::Measure.new
-      time, err = st.latency
-      #assert_nil err
-      #assert_in_delta 0.1, 0.1, time
+      res = st.latency
+      assert !res.error?
+      assert_in_delta 0.1, 0.1, res.duration
     end
 
     def raise_IO_Error(*args)
@@ -53,8 +53,9 @@ class TestUtils < MiniTest::Test
     # Test handled failure
     Speedtest::Utils.stub :get_file, self.method(:raise_IO_Error) do
       st=Speedtest::Measure.new
-      _, err = st.latency
-      #assert_equal -1, err[0] || []
+      res = st.latency
+      assert res.error?
+      assert_equal -1, res.error[:errno]
     end
 
     def raise_other_Error(*args)
@@ -64,8 +65,9 @@ class TestUtils < MiniTest::Test
     # Test unexpected failure
     Speedtest::Utils.stub :get_file, self.method(:raise_other_Error) do
       st=Speedtest::Measure.new
-      _, err = st.latency
-      #assert_equal -2, err[0] || []
+      res = st.latency
+      assert res.error?
+      assert_equal -2, res.error[:errno]
     end
 
 

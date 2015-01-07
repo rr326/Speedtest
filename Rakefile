@@ -1,21 +1,6 @@
 require 'rake/testtask'
+require_relative 'lib/speedtest/utils'
 
-# Rake::TestTask.new do |t|
-#   t.name = :
-#   t.pattern = "test/test_speedtest.rb"
-# end
-
-# Rake::TestTask.new do |t|
-#   t.name = 'long'
-#   t.pattern = "test/test_longrunning.rb"
-# end
-
-# Rake::TestTask.new do |t|
-#   t.name = 'test'
-#   t.pattern = "test/test_speedtest.rb"
-# end
-
-puts 'In Rakefile!'
 
 t = Rake::TestTask.new('test:long')
 t.pattern = 'test/test_longrunning.rb'
@@ -28,4 +13,6 @@ wip.pattern = 'test/test_speedtest.rb'
 
 task :test => ["test:all"]
 
-puts 'Leaving Rakefile!'
+task :buildfiles do |t|
+  Speedtest::Utils.create_files
+end
