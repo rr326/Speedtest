@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require_relative 'options'
 require_relative 'measure'
 
@@ -14,11 +17,13 @@ module Speedtest
       if @opts[:latency] 
         res = Speedtest::Measure.new.latency
         puts res.to_log
+        exit 1 if res.error
       end
 
       if @opts[:throughput] 
         res = Speedtest::Measure.new.throughput
         puts res.to_log
+        exit 1 if res.error
       end
 
     end
