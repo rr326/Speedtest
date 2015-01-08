@@ -11,16 +11,21 @@ class TestUtils < MiniTest::Test
   #   Utils.create_files
   # end
 
-  def test_aws_get_files
-    # TODO test timeout and other errors
-    assert_equal  1, Utils.get_file(1, :ONE).length
-    assert_equal  1024, Utils.get_file(1, :KB).length
-    assert_equal  1024*1024, Utils.get_file(1, :MB).length
+  # Test it gets all the files properly
+  # Test that it raises IOError on timeout
+  def test_get_file
+    Utils::FILE_LIST.each do |size, units|
+      assert_equal  size*Utils::UNITS[units], Utils.get_file(size, units).length
 
-    assert_raises(Aws::S3::Errors::NoSuchKey) { Utils.get_file(23, units=:ONE) }
+      oldval=Utils.test_force_timeout
+      Utils.test_force_timeout = true
+      assert_raises(IOError) { Utils.get_file(size, units) }
+      Utils.test_force_timeout = oldval            
+    end 
+
+    assert_raises(Aws::S3::Errors::NoSuchKey) { Utils.get_file(23, :ONE) }
   end
 end
-
 
 
 class TestUtils < MiniTest::Test

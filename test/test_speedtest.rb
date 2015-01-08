@@ -6,7 +6,7 @@ require_relative '../lib/speedtest/measure'
 class TestUtils < MiniTest::Test
   include Speedtest
 
-  def xtest_nbyte_string
+  def test_nbyte_string
     string = Utils.nbyte_string(100)
     assert_equal string.length, 100
 
