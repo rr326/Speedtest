@@ -1,5 +1,7 @@
 require_relative 'utils'
 require 'logging'
+require 'active_support'
+
 
 
 
@@ -33,16 +35,33 @@ module Speedtest
         @duration = duration
         @error = error
         @speed =  qty ? (Utils::UNITS[units] * qty) / @duration : nil
+        @size = qty ? (Utils::UNITS[units] * qty) : nil
       end
-class ::Float
-  def comma(prec=0)
-    self.round(prec).to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
-  end
-end
       
 
+      def comma(val, prec=0)
+        if ! val.nil?
+          val.round(prec).to_s.reverse.gsub(/...(?=.)/,'\&,').reverse 
+        else
+          nil
+        end        
+      end
+      
       def to_log
-        sprintf "%s\t%s\t%ss\t%sb/s\t%s", @time, @measure, @duration, @speed ? @speed.comma : '--' || 0, @error
+        # sprintf "%s\t%s\t%ss\t%sb/s\t%s", @time, @measure, @duration, @speed ? @speed.comma : '--' || 0, @error
+
+        h = ActiveSupport::OrderedHash.new
+        [:@time, :@measure, :@speed, :@duration, :@size, :@error].each do |var|
+          if var == :@speed or var == :@size
+            val = comma(self.instance_variable_get(var))
+          else
+            val = self.instance_variable_get(var)
+          end
+         h[var.to_s.sub(/^@/,'')] = val unless val.nil?        
+        end
+
+        # h.to_json(opts={indent: "\t"})
+        JSON.pretty_generate(h)
       end
 
       def to_s
