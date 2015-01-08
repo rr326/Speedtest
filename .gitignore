@@ -1,4 +1,3 @@
 lib/speedtest/REPL.rb
 .tags*
 *.gem
-Gemfile.lock
