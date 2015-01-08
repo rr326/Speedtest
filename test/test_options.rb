@@ -5,7 +5,6 @@ require_relative '../lib/speedtest/options'
 class TestUtils < MiniTest::Test
   def test_options
     opts = Speedtest::Options.new.parse([''])
-    Speedtest::Options.display_help_if_needed(opts)
     out, err = capture_io do
       Speedtest::Options.display_help_if_needed(opts)
     end

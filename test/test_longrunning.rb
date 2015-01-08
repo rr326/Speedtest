@@ -3,7 +3,6 @@ require 'aws-sdk'
 require_relative '../lib/speedtest/utils'
 require_relative '../lib/speedtest/measure'
 
-
 class TestUtils < MiniTest::Test
   include Speedtest
 
@@ -34,15 +33,12 @@ class TestUtils < MiniTest::Test
   def test_latency
     m=Speedtest::Measure.new
     res = m.latency
-    puts res
     assert_nil res.error
     assert res.duration
     
     oldval=Utils.test_force_timeout
     Utils.test_force_timeout = true
     res = m.latency
-    puts "Forced timeout\n"
-    puts res
     assert res.error
     Utils.test_force_timeout = oldval    
   end
@@ -50,7 +46,6 @@ class TestUtils < MiniTest::Test
   def test_throughput
     m=Speedtest::Measure.new
     res = m.throughput
-    puts res
     assert_nil res.error
     assert res.duration
     assert res.speed
@@ -58,8 +53,6 @@ class TestUtils < MiniTest::Test
     oldval=Utils.test_force_timeout
     Utils.test_force_timeout = true
     res = m.throughput
-    puts "Forced timeout\n"
-    puts res
     assert res.error
     Utils.test_force_timeout = oldval    
   end
