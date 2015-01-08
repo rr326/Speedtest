@@ -9,7 +9,7 @@ module Speedtest
         :KB => 1024,
         :MB => 1024*1024
     }
-    FILE_LIST = [[1, :ONE], [1, :KB], [1, :MB]]
+    FILE_LIST = [[1, :ONE], [1, :KB], [1, :MB], [10, :MB]]
 
     # This is all used for testing.  Ugly, but can't find a more elegant way
     @@test_force_timeout=false

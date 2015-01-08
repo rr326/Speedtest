@@ -19,21 +19,30 @@ module Speedtest
 
     # Measure throughput by timing the retrieval of a big file
     def throughput
-      t, e =_time_get_file(1, :MB)
-      res = TimerResult.new('throughput', t, e)
+      qty = 10
+      units = :MB
+      t, e =_time_get_file(qty, units)
+      res = TimerResult.new('throughput', t, e, qty, units)
     end
 
     class TimerResult
-      attr_reader :error, :duration
-      def initialize(measure, duration, error)
+      attr_reader :error, :duration, :speed
+      def initialize(measure, duration, error, qty=nil, units=nil)
         @measure = measure
         @time = Time.now
         @duration = duration
         @error = error
+        @speed =  qty ? (Utils::UNITS[units] * qty) / @duration : nil
       end
+class ::Float
+  def comma(prec=0)
+    self.round(prec).to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
+  end
+end
+      
 
       def to_log
-        sprintf "%s\t%s\t%ss\t%s", @time, @measure, @duration, @error
+        sprintf "%s\t%s\t%ss\t%sb/s\t%s", @time, @measure, @duration, @speed ? @speed.comma : '--' || 0, @error
       end
 
       def to_s

@@ -13,7 +13,7 @@ class TestUtils < MiniTest::Test
 
   # Test it gets all the files properly
   # Test that it raises IOError on timeout
-  def test_get_file
+  def xtest_get_file
     Utils::FILE_LIST.each do |size, units|
       assert_equal  size*Utils::UNITS[units], Utils.get_file(size, units).length
 
