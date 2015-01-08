@@ -22,9 +22,8 @@ module Speedtest
     end 
 
     def self.help_needed?(opts)
-      opts[:help] or ! opts.to_hash.values.reduce do |v|
-        v || nil
-      end
+
+      opts[:help] or ! opts.to_hash.values.any?
     end    
 
     def self.display_help_if_needed(opts) 
