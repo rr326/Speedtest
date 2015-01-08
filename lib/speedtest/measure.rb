@@ -7,12 +7,6 @@ require 'active_support'
 
 module Speedtest
   class Measure
-    def initialize
-      Logging.logger.root.level = :debug
-      Logging.logger.root.appenders = Logging.appenders.stdout
-      @log = Logging.logger['main_log']
-    end
-
     # Measure latency by timing the retrieval of a 1 byte file
     def latency
       t, e = _time_get_file(1, :ONE)
@@ -23,19 +17,24 @@ module Speedtest
     def throughput
       qty = 10
       units = :MB
+      lat = latency
       t, e =_time_get_file(qty, units)
-      res = TimerResult.new('throughput', t, e, qty, units)
+      res = TimerResult.new('throughput_in', t, e, qty, units, lat.duration)
     end
 
     class TimerResult
-      attr_reader :error, :duration, :speed
-      def initialize(measure, duration, error, qty=nil, units=nil)
+      attr_reader :error, :duration, :speed_raw, :latency, :speed
+      def initialize(measure, duration, error, qty=nil, units=nil, latency=nil)
         @measure = measure
         @time = Time.now
         @duration = duration
         @error = error
-        @speed =  qty ? (Utils::UNITS[units] * qty) / @duration : nil
+        @speed_raw =  qty ? (Utils::UNITS[units] * qty) / @duration : nil
         @size = qty ? (Utils::UNITS[units] * qty) : nil
+        @latency = latency
+        @speed = (qty and latency) \
+          ? (Utils::UNITS[units] * qty) / (@duration - @latency) 
+          : nil
       end
       
 
@@ -48,11 +47,11 @@ module Speedtest
       end
       
       def to_log
-        # sprintf "%s\t%s\t%ss\t%sb/s\t%s", @time, @measure, @duration, @speed ? @speed.comma : '--' || 0, @error
+        # sprintf "%s\t%s\t%ss\t%sb/s\t%s", @time, @measure, @duration, @speed_raw ? @speed_raw.comma : '--' || 0, @error
 
         h = ActiveSupport::OrderedHash.new
-        [:@time, :@measure, :@speed, :@duration, :@size, :@error].each do |var|
-          if var == :@speed or var == :@size
+        [:@time, :@measure, :@speed_raw, :@speed, :@latency, :@duration, :@size, :@error].each do |var|
+          if [:@speed_raw, :@speed, :@size].include? var
             val = comma(self.instance_variable_get(var))
           else
             val = self.instance_variable_get(var)
@@ -78,10 +77,8 @@ module Speedtest
         begin
           Utils.get_file(size, units)
         rescue IOError => e
-          @log.info e.to_s
           err = {errno: -1, err: e}
         rescue Exception => e
-          @log.error "Unhandled exception: #{e}"
           err = {errno: -2, err: e}
         else
           err = nil

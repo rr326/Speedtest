@@ -34,14 +34,33 @@ class TestUtils < MiniTest::Test
   def test_latency
     m=Speedtest::Measure.new
     res = m.latency
-
-    puts res.to_s
+    puts res
+    assert_nil res.error
+    assert res.duration
+    
+    oldval=Utils.test_force_timeout
+    Utils.test_force_timeout = true
+    res = m.latency
+    puts "Forced timeout\n"
+    puts res
+    assert res.error
+    Utils.test_force_timeout = oldval    
   end
 
   def test_throughput
     m=Speedtest::Measure.new
     res = m.throughput
-
-    puts res.to_s
+    puts res
+    assert_nil res.error
+    assert res.duration
+    assert res.speed
+    
+    oldval=Utils.test_force_timeout
+    Utils.test_force_timeout = true
+    res = m.throughput
+    puts "Forced timeout\n"
+    puts res
+    assert res.error
+    Utils.test_force_timeout = oldval    
   end
 end
