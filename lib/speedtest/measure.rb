@@ -14,9 +14,7 @@ module Speedtest
     end
 
     # Measure throughput by timing the retrieval of a big file
-    def throughput
-      qty = 10
-      units = :MB
+    def throughput(qty=10, units=:MB)
       lat = latency
       t, e =_time_get_file(qty, units)
       res = TimerResult.new('throughput_in', t, e, qty, units, lat.duration)

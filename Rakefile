@@ -9,7 +9,10 @@ t = Rake::TestTask.new('test:all')
 t.pattern = 'test/**/*.rb'
 
 wip = Rake::TestTask.new('test:wip')
-wip.pattern = 'test/test_speedtest.rb'
+wip.test_files = FileList.new('test/**/*.rb') do |fl|
+  fl.exclude('test/test_longrunning.rb')
+end
+wip.pattern = nil
 
 task :test => ["test:all"]
 

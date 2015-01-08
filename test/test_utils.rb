@@ -20,8 +20,8 @@ class TestUtils < MiniTest::Test
     assert_raises(RuntimeError) { Utils.nbyte_string(100, units='MB') }
 
   end
-  
 end
+
 
 class TestUtils < MiniTest::Test
   include Speedtest
@@ -35,6 +35,7 @@ class TestUtils < MiniTest::Test
     assert_equal time.round(2), 0.05
   end
 end
+
 
 class TestUtils < MiniTest::Test
   def test_measure
@@ -70,13 +71,6 @@ class TestUtils < MiniTest::Test
       assert_equal -2, res.error[:errno]
     end
 
-
   end
-
-  # def test_aws_get_files
-  #   assert_equal  1024*1024, Utils.get_file(1, :MB, extra_options={:http_read_timeout => 0.0001}).length
-  #
-  # end
-
 end
 
