@@ -5,7 +5,7 @@ module Speedtest
   class Options
     def parse(argv=ARGV)
       opts = Slop.new({strict: true}) do \
-        banner 'Usage: speedtest [options]'
+        banner "Usage: speedtest [options]\nTest your internet connection speed."
         on 'h', 'help', 'help'
         on 'l', 'latency', 'latency'
         on 't', 'throughput', 'throughput'        

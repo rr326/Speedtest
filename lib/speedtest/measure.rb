@@ -3,8 +3,6 @@ require 'logging'
 require 'active_support'
 
 
-
-
 module Speedtest
   class Measure
     # Measure latency by timing the retrieval of a 1 byte file
@@ -26,14 +24,18 @@ module Speedtest
       def initialize(measure, duration, error, qty=nil, units=nil, latency=nil)
         @measure = measure
         @time = Time.now
-        @duration = duration
         @error = error
-        @speed_raw =  qty ? (Utils::UNITS[units] * qty) / @duration : nil
-        @size = qty ? (Utils::UNITS[units] * qty) : nil
-        @latency = latency
-        @speed = (qty and latency) \
-          ? (Utils::UNITS[units] * qty) / (@duration - @latency) 
-          : nil
+
+        if error.nil?
+          @duration = duration
+          @speed_raw =  qty ? (Utils::UNITS[units] * qty) / @duration : nil
+          @size = qty ? (Utils::UNITS[units] * qty) : nil
+          @latency = latency
+          @speed = (qty and latency) \
+            ? (Utils::UNITS[units] * qty) / (@duration - @latency) 
+            : nil
+        end
+        
       end
       
 

@@ -28,11 +28,11 @@ class TestUtils < MiniTest::Test
 
   def test_timer
     time, retval = Utils.timer do
-      sleep 0.05
+      sleep 0.06
       'success!'
     end
     assert_equal retval, 'success!'
-    assert_equal time.round(2), 0.05
+    assert_equal time.round(1), 0.1
   end
 end
 
@@ -73,4 +73,3 @@ class TestUtils < MiniTest::Test
 
   end
 end
-
