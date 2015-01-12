@@ -1,6 +1,5 @@
 #! /usr/bin/env ruby
 
-# require 'speedtest/runner'
 require_relative '../lib/speedtest/runner'
 
 Speedtest::Runner.new.run
